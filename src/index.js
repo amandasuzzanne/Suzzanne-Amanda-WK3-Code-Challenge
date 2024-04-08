@@ -57,10 +57,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     const listItem = document.createElement('li');
                     listItem.className = 'film item';
                     listItem.textContent = movie.title;
+
+                    // Add sold-out class if the movie is sold out
+                    if (movie.tickets_sold === movie.capacity) {
+                        listItem.classList.add('sold-out');
+                    }
+
+                    // Create a delete button for each movie
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'X';
+                    deleteButton.className = 'ui delete-movie';
+                    deleteButton.setAttribute('data-id', movie.id);
+
+                    // Event listener for delete button
+                    deleteButton.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        const movieId = event.target.dataset.id;
+                        fetch(`http://localhost:3000/films/${movieId}`, {
+                            method: 'DELETE'
+                        })
+                            .then(() => {
+                                // After successfully deleting the movie, re-display all movies
+                                displayAllMovies();
+                            });
+                    });
+
+                    // Append delete button to the list item
+                    listItem.appendChild(deleteButton);
+
                     // Event listener to display movie details 
                     listItem.addEventListener('click', () => {
                         displayMovieDetails(movie.id);
                     });
+
+                    // Append list item to the films list
                     filmsList.appendChild(listItem);
                 });
 
