@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`http://localhost:3000/films/${movieId}`)
             .then(response => response.json())
             .then(movie => {
+                // Calculate the number of available tickets
+                const availableTickets = movie.capacity - movie.tickets_sold;
+
                 // Display the details of the movie
                 filmDetails.innerHTML = `
                     <div class="card">
@@ -21,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="description">${movie.description}</div>
                             <div class="extra">
                             <span class="ui label">${movie.showtime}</span>
-                            <span id="ticket-num">${movie.capacity}</span> remaining tickets
+                            <span id="ticket-num">${availableTickets}</span> remaining tickets
                         </div>
                     </div>
                     <div class="extra content">
