@@ -101,32 +101,39 @@ document.addEventListener('DOMContentLoaded', () => {
             })
     }
 
-    // Event listener for the buy ticket button
+    // Event listener to buy ticket
     filmDetails.addEventListener('click', e => {
         if (e.target.classList.contains('buy-ticket')) {
             const filmId = e.target.dataset.id;
             fetch(`http://localhost:3000/films/${filmId}`)
                 .then(response => response.json())
                 .then(movie => {
-                    // Calculate the remaining capacity and tickets sold
-                    const updatedTicketsSold = movie.tickets_sold + 1;
-                    const updatedAvailableTickets = movie.capacity - 1;
+                    // Check if tickets are available
+                    if (movie.tickets_sold < movie.capacity) {
+                        // Calculate updated tickets sold and available tickets
+                        const updatedTicketsSold = movie.tickets_sold + 1;
 
-                    // Update the value of capacity and tickets sold in the database
-                    fetch(`http://localhost:3000/films/${filmId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            tickets_sold: updatedTicketsSold,
-                            capacity: updatedAvailableTickets
+                        // Update tickets_sold in the database
+                        fetch(`http://localhost:3000/films/${filmId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                tickets_sold: updatedTicketsSold,
+                            })
                         })
-                    })
-                        .then(() => {
-                            // Update UI after buying ticket
-                            displayMovieDetails(filmId);
-                        })
+                            .then(() => {
+                                // Update UI after buying ticket
+                                displayMovieDetails(filmId);
+                                displayAllMovies();
+                            })
+                            .catch(error => {
+                                console.error('Error updating tickets:', error);
+                            });
+                    } else {
+                        console.log('No available tickets');
+                    }
                 })
         }
     });
