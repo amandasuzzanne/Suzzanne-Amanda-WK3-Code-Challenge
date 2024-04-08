@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                     <div class="extra content">
-                        <button class="ui orange button buy-ticket" data-id="${movie.id}" ${movie.capacity === 0 ? 'disabled' : ''}>
-                            Buy Ticket
+                        <button class="ui orange button buy-ticket" data-id="${movie.id}" ${availableTickets === 0 ? 'disabled' : ''}>
+                            ${availableTickets === 0 ? 'Sold Out' : 'Buy Ticket'}
                         </button>
                     </div>
                 `;
